@@ -1,7 +1,7 @@
 #include <xc.inc>
 
 extrn	UART_Setup, UART_Transmit_Message  ; external subroutines
-extrn	LCD_Setup, LCD_Write_Message,LCD_clear
+extrn	LCD_Setup, LCD_Write_Message,LCD_clear, LCD_Send_Byte_I
 	
 psect	udata_acs   ; reserve data space in access ram
 counter:    ds 1    ; reserve one byte for a counter variable
@@ -13,7 +13,7 @@ myArray:    ds 0x80 ; reserve 128 bytes for message data
 psect	data    
 	; ******* myTable, data in programme memory, and its length *****
 myTable:
-	db	' ','e','l','l','o',' ','W','o','r','l','d','!',0x0a
+	db	'L','e','l','l','o',' ','W','o','r','l','d','!',0x0a
 					; message, plus carriage return
 	myTable_l   EQU	13	; length of data
 	align	2
@@ -51,10 +51,14 @@ loop: 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	lfsr	2, myArray
 	call	UART_Transmit_Message
 
-	movlw	myTable_l	; output message to LCD
+	
+	movlw	0011000000B	; Set to start at second line, but it looks like that one char is missing
+	call	LCD_Send_Byte_I
+	movlw	myTable_l
 	addlw	0xff		; don't send the final carriage return to LCD
 	lfsr	2, myArray
 	call	LCD_Write_Message
+	
 	call	button
 	
 	
