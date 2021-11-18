@@ -61,6 +61,7 @@ KEY_Read:
     movwf   position, A
     movff   position, PORTC
     
+    
     ;movff   column, PORTD
 
     return
