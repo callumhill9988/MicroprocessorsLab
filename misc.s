@@ -95,7 +95,8 @@ outputcheck:
 pulselength:		; calculates counter * increment
     
     movf  pwm_counter, W
-    mulwf Increment	; multiply, result in PRODH:PRODL
+    ; mulwf Increment	; multiply, result in PRODH:PRODL
+    mullw   0x0e	; multiply, result in PRODH:PRODL
     movff   PRODL, T_CHANGE_L
     movff   PRODH, T_CHANGE_H
     return 
@@ -110,9 +111,9 @@ low_pulse:
     movwf   TIME_L, A
     
     movf    T_CHANGE_L, W	; 16 bit adder
-    addwf   TIME_L, 1
+    addwf   TIME_L, F
     movf    T_CHANGE_H, W
-    addwfc  TIME_H, 1
+    addwfc  TIME_H, F
     
     movff   TIME_H, TMR0H ; Update interrupt timer control registers
     movff   TIME_L, TMR0L

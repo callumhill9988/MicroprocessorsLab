@@ -54,6 +54,7 @@ start:
     movwf   TRISD, A
     
 loop:
+    
     call    ultra_main	    ;Send and receive ultrasound signal
     
     call    lcd_display
@@ -124,9 +125,14 @@ send_message:		; Output message to UART, interface to computer
     movff   ANSH, POSTINC0
     movff   ANSL, POSTINC0
     movff   pwm_counter, POSTINC0
+    
+    movlw   0xAB
+    movwf   POSTINC0
+    movlw   0xCD
+    movwf   POSTINC0
 
     
-    movlw   0x3		; Load message length into W
+    movlw   0x5		; Load message length into W
     lfsr    2, msg	; UART reads from FSR2	    
     call    UART_Transmit_Message
     return
